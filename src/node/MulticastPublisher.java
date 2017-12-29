@@ -17,6 +17,7 @@ public class MulticastPublisher {
     packet.setPort(mcPort);
     udpSocket.send(packet);
 
+    
     System.out.println("Sent a  multicast message.");
     System.out.println("Exiting application");
     udpSocket.close();
