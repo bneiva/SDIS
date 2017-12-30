@@ -3,23 +3,51 @@ package node;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-/*from   www .j  av a2 s. c  o  m*/
-public class MulticastPublisher {
-  public static void main(String[] args) throws Exception {
-    int mcPort = 12345;
-    String mcIPStr = "230.1.1.1";
-    DatagramSocket udpSocket = new DatagramSocket();
 
-    InetAddress mcIPAddress = InetAddress.getByName(mcIPStr);
-    byte[] msg = "Hello".getBytes();
-    DatagramPacket packet = new DatagramPacket(msg, msg.length);
-    packet.setAddress(mcIPAddress);
-    packet.setPort(mcPort);
-    udpSocket.send(packet);
+public class MulticastPublisher extends Thread {
 
-    
-    System.out.println("Sent a  multicast message.");
-    System.out.println("Exiting application");
-    udpSocket.close();
-  }
+	private int mcPort;
+	private String mcIPStr;
+	private byte[] packetMessage = new byte[1024];
+
+	MulticastPublisher(int port, String IPGroup) throws Exception {
+		this.mcPort = port;
+		this.mcIPStr = IPGroup;
+
+	}
+
+	public void sendPacketMessage(byte[] packetMessage) {
+		this.packetMessage = packetMessage;
+
+	}
+
+	public void run() {
+		try {
+			sender();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void sender() throws Exception {
+
+		DatagramSocket udpSocket = new DatagramSocket();
+
+		InetAddress mcIPAddress = InetAddress.getByName(mcIPStr);
+
+		// byte[] msg = "Hello".getBytes();
+		DatagramPacket packet = new DatagramPacket(packetMessage, packetMessage.length);
+
+		packet.setAddress(mcIPAddress);
+		packet.setPort(mcPort);
+
+		udpSocket.send(packet);
+
+		System.out.println("Sent a  multicast message.");
+		System.out.println("Exiting application");
+
+		udpSocket.close();
+	}
 }
