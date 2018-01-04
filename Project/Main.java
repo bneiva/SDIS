@@ -149,14 +149,14 @@ public class Main {
         int nSer = 1;
         
         //Gerar os nós
-        node[0] = new Node(0, 0, 0, 0, 0);
+        node[0] = new Node(node, 0, 0, 0, 0, 0);
         for(int k = 0; k<nCol; k++){
             int nCP = colGen[k];
             for(int g = 0; g<nCP; g ++){
                 if(k == 0){
-                    node[nSer] = new Node(maxLim[k], 0, roomW, 0, nSer);
+                    node[nSer] = new Node(node, maxLim[k], 0, roomW, 0, nSer);
                 }else{
-                    node[nSer] = new Node(maxLim[k], maxLim[k-1], roomW, 0, nSer);
+                    node[nSer] = new Node(node, maxLim[k], maxLim[k-1], roomW, 0, nSer);
                 }
                 nSer++; 
             }
