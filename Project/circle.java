@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package machinestate;
+package Project;
 
 /**
  *
@@ -14,9 +14,10 @@ package machinestate;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import javax.swing.JPanel;
 
 
-public class circle extends Frame {
+public class circle extends JPanel {
     private int x, y;
     public static int n_circles;
  
