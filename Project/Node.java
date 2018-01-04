@@ -17,6 +17,7 @@ public class Node {
     
     int x_coord;
     int y_coord;
+    int id;
     
     String ip = new String();
     
@@ -29,7 +30,7 @@ public class Node {
     
     public Node(int maxX, int minX, int maxY, int minY, int nextIP){
         
-        if(maxX == 0 && minX==0 && maxY ==0 && minY==0 && nextIP==0 ){
+        if(maxX == 0 && minX == 0 && maxY == 0 && minY == 0 && nextIP == 0 ){
             x_coord = 0;
             y_coord = 0;
         }else{
@@ -41,6 +42,8 @@ public class Node {
         Random yRand = new Random();
         y_coord = yRand.nextInt(maxY-minY) + minY;
         }
+        //Atribuir id
+        id = nextIP;        
         //Atribuir IP
         ip = "224.1.1."+Integer.toString(nextIP);
 

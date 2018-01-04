@@ -1,7 +1,13 @@
 package Project;
 
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import static java.lang.System.arraycopy;
 import java.util.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class Main {
 
@@ -55,7 +61,7 @@ public class Main {
   }
     
     public static void main(String[] args){
-        
+       
     //Criar rede
         //N - nodes number
         int N = 100;
@@ -159,6 +165,22 @@ public class Main {
         
         if(debug == 1)
             System.out.println(node[99].x_coord + " " + node[99].y_coord);
+        
+        JFrame frame = new JFrame();
+        
+        frame.addWindowListener(new WindowAdapter(){
+        
+            public void windowClosing(WindowEvent we){
+                System.exit(0);
+            }
+    
+        });
+       
+        frame.setSize(600, 600);
+        
+        frame.getContentPane().add(new Circle(N, node));
+        
+        frame.setVisible(true);
     }
     
 }
