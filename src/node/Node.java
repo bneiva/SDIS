@@ -16,8 +16,10 @@ public class Node {
 	public static  void main(String[] args) throws Exception {
 		
 		MulticastReceiver Rx =  new MulticastReceiver(12345,"230.1.1.1"); 
+		Packet packet = new Packet();
 		 
 		Rx.start();
+		System.out.println("packet bytes  " +  Rx.packetMessageBytes());
 		 
 		
 		 //MulticastReceiver Rx1 =  new MulticastReceiver(12345,"230.1.1.2"); 

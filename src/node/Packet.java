@@ -1,4 +1,4 @@
-package testeproj;
+package node;
 
 public class Packet {
     

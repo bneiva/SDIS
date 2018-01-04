@@ -8,12 +8,19 @@ public class MulticastReceiver extends Thread {
 
 	private int mcPort;
 	private String mcIPStr;
+	private byte[] packetMessage = new byte[1024];
 	
 
 	MulticastReceiver(int port, String IPGroup) throws Exception {
 		this.mcPort = port;
 		this.mcIPStr = IPGroup;
 
+	}
+	
+	
+	public byte[] packetMessageBytes() {
+		return null;//this.packetMessageBytes();
+		
 	}
 
 	public void run() {
@@ -26,7 +33,7 @@ public class MulticastReceiver extends Thread {
 		}
 
 	}
-
+	
 	public void receiver() throws Exception {
 		MulticastSocket mcSocket = null;
 		InetAddress mcIPAddress = null;
@@ -43,7 +50,9 @@ public class MulticastReceiver extends Thread {
 		while (round != 0) {  // timer
 			System.out.println("Waiting for a  multicast message...");
 			mcSocket.receive(packet);
+			
 			String msg = new String(packet.getData(), packet.getOffset(), packet.getLength());
+			this.packetMessage=msg.getBytes();
 			System.out.println("[Multicast  Receiver] Received:" + msg);
 			round--;
 		}

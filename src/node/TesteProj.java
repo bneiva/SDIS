@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package testeproj;
+package node;
 
 /**
  *
@@ -22,12 +22,13 @@ public class TesteProj {
         
         int i;
         
-        for(i = 0; i<buf.length; i++){
+        //for(i = 0; i<buf.length; i++){
             //System.out.print(buf[i]+";");
-        }
+        //}
         
         p.decodeData(buf);
         for(i = 0; i<p.receiveData.length; i++){
+        	System.out.print("packet " + i + ": ");
             System.out.println((char)p.receiveData[i]);
         }
         
