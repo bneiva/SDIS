@@ -160,16 +160,13 @@ public class Main {
 
 		}
 
-		// compute the
+		/* compute the Neighbours nodes*/
 		computeNeighbours(node);
-		/* debugge ipLIst */
-		// for (int k = 0; k < 100; k++) {
-		// node[k].printListIP();
-		// }
-
+	
+		/* start receptors*/
 		startGlossySimulation(node, node[12]);
-		//startGlossySimulationInitiator(node);
-
+	
+		/*start initiator */
 		startGlossySimulationRetransmit("start", 10000,5000, node[12]); 
 		
 		
