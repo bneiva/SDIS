@@ -13,11 +13,12 @@ public class Node extends Thread {
 	int x_coord;
 	int y_coord;
 	int id;
+	String ip = new String();
 	private ArrayList<Node> myNeighbours = new ArrayList<Node>();
 	private ArrayList<String> ipNeighbours = new ArrayList<String>();
 	private int counterMessage = 0;
-
-	String ip = new String();
+	private String Initiator;
+	
 
 	private void verifyNeig(int radius, int id, Node[] node) {
 		int raio;
@@ -70,6 +71,10 @@ public class Node extends Thread {
 	public void updateNeighboursNodes(Node neighbour) {
 		this.myNeighbours.add(neighbour);
 	}
+	
+	public ArrayList<String> getIpNeighboursNodes(){
+		return this.ipNeighbours;
+	}
 
 	public void updateListOfIPs(String ip) {
 		this.ipNeighbours.add(ip);
@@ -98,8 +103,8 @@ public class Node extends Thread {
 		if (this.id == 12) {
 			try {
 
-				for (int i = 0; i < this.ipNeighbours.size(); i++) {
-					Packet packet1 = new Packet();
+				//for (int i = 0; i < this.ipNeighbours.size(); i++) {
+					/*Packet packet1 = new Packet();
 					MulticastPublisher[] Tx =  new MulticastPublisher[this.ipNeighbours.size()]; 
 					Tx[i]=new MulticastPublisher(12345, (String) this.ipNeighbours.get(i));
 					
@@ -110,24 +115,32 @@ public class Node extends Thread {
 					//Tx.sendPacketMessage(messageToSend.getBytes());
 					System.out.println("Send to " + (String) this.ipNeighbours.get(i));
 					Tx[i].start();
-
-					/// MulticastPublisher Tx1 = new MulticastPublisher(12345, "224.1.1.20");
-					// Packet packet11 = new Packet();
-
-					// Tx1.sendPacketMessage(packet11.encodeData(10, " Mesage from Node2"));
-					// Tx1.start();
-				}
+					*/
+					 MulticastPublisher Tx1 = new MulticastPublisher(12345, this.ip);
+					 //Packet packet11 = new Packet();
+					 String messageToSend = " Mesage counter: " + Integer.toString(this.counterMessage);
+					 Tx1.sendPacketMessage(messageToSend.getBytes());
+					 Tx1.start();
+				//}
 				this.counterMessage++;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else if (this.id != 0 && this.id < 100 && this.id != 12) {
-			MulticastReceiver Rx = new MulticastReceiver(12345, this.ip);
-			Packet packet = new Packet();
-			Rx.start();
-			Rx.packetMessageBytes();
-			System.out.println("packet bytes  " + Rx.packetMessageBytes() + "waiting with this IP" + this.ip);
+			MulticastReceiver[] Rx = new MulticastReceiver[this.ipNeighbours.size()];
+			for(int i=0;i<this.ipNeighbours.size(); i++) {
+				Rx[i] = new MulticastReceiver(12345, this.ipNeighbours.get(i));
+				Rx[i].start();
+				Rx[i].packetMessageBytes();
+				System.out.println("packet bytes " + Rx[i].packetMessageBytes() + "waiting with this IP" + this.ip);
+				
+			}
+			//MulticastReceiver Rx = new MulticastReceiver(12345, "224.1.1.12");
+			//Packet packet = new Packet();
+			//Rx.start();
+			//Rx.packetMessageBytes();
+			//System.out.println("packet bytes  " + Rx.packetMessageBytes() + "waiting with this IP" + this.ip);
 
 		}
 
