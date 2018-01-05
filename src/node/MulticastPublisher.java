@@ -45,8 +45,8 @@ public class MulticastPublisher extends Thread {
 
 		udpSocket.send(packet);
 
-		System.out.println("Sent a  multicast message.");
-		System.out.println("Exiting application");
+		System.out.println("Sent a  multicast message.............................................");
+		System.out.println("Exiting application...................................................");
 
 		udpSocket.close();
 	}

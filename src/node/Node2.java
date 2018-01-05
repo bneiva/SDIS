@@ -7,7 +7,7 @@ public class Node2 {
 		 //Rx.start();
 		 //MulticastReceiver Rx1 =  new MulticastReceiver(12345,"230.1.1.2"); 
 		 //Rx1.start();
-		MulticastPublisher Tx = new MulticastPublisher(12345,"230.1.1.1");
+		MulticastPublisher Tx = new MulticastPublisher(12345,"224.1.1.3");
 		Packet packet = new Packet();
 		
 		Tx.sendPacketMessage(packet.encodeData(10, " Mesage from Node2"));

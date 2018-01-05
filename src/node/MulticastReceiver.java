@@ -47,15 +47,16 @@ public class MulticastReceiver extends Thread {
 		DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
 		
 		int round = 2;
-		while (round != 0) {  // timer
+		//while (round != 0) {  // timer
 			System.out.println("Waiting for a  multicast message...");
 			mcSocket.receive(packet);
-			
+			System.out.println("fuck you......1...................................................") ;
 			String msg = new String(packet.getData(), packet.getOffset(), packet.getLength());
 			this.packetMessage=msg.getBytes();
 			System.out.println("[Multicast  Receiver] Received:" + msg);
-			round--;
-		}
+			//round--;
+		//}
+		System.out.println("fuck you.................2........................................") ;
 		mcSocket.leaveGroup(mcIPAddress);
 		mcSocket.close();
 	}
