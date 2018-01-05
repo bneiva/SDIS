@@ -5,7 +5,7 @@ public class Node_V00 {
 	 private static ExcutionTimer glossyTimer = new ExcutionTimer();
 	 
 	 public void schedualeNextPhaseGlossy() {
-		 glossyTimer.activateTimer("start",1000 ,1000); 
+		 //glossyTimer.activateTimer("start",1000 ,1000); 
 		 while(true) {
 				System.out.println(glossyTimer.getglossyState());
 			 }
@@ -15,7 +15,7 @@ public class Node_V00 {
 	
 	public static  void main(String[] args) throws Exception {
 		
-		MulticastReceiver Rx =  new MulticastReceiver(12345,"230.1.1.1"); 
+		MulticastReceiver Rx =  new MulticastReceiver(12345,"224.1.1.20"); 
 		Packet packet = new Packet();
 		 
 		Rx.start();

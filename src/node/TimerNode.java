@@ -8,16 +8,22 @@ public class TimerNode extends TimerTask {
 	private boolean x1 = false;
 	Timer timer;
 	boolean glossyState;
+	private Node nodeTimer;
+	private int counter=0;
 	
-	TimerNode(boolean glossyState){
+	TimerNode(boolean glossyState, Node nodeTimer){
 		this.glossyState=glossyState;
+		this.nodeTimer=nodeTimer;
 	}
 	
 	@Override
 	public void run() {
+		
 		System.out.println("Schedualed task");
 		this.glossyState= !glossyState;
-		System.out.println("Time's up!");
+		//this.nodeTimer.start();
+		this.nodeTimer.run();
+		System.out.println("Time's up!"+ " counter = " + counter++);
 
 	}
 	public boolean getglossyState() {

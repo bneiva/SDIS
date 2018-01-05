@@ -40,7 +40,7 @@ public class Main {
 	 */
 
 	// Para DEBUG: debug= 1; NORMAL: debug = 0;
-	public static int debug = 1;
+	public static int debug = 0;
 
 	private static int roomL = 500;
 	private static int roomW = 500;
@@ -167,9 +167,12 @@ public class Main {
 		// node[k].printListIP();
 		// }
 
-		startGlossySimulation(node);
-		//node[1].start();
+		startGlossySimulation(node, node[12]);
+		//startGlossySimulationInitiator(node);
 
+		startGlossySimulationRetransmit("start", 10000,5000, node[12]); 
+		
+		
 		if (debug == 1)
 			System.out.println(node[99].x_coord + " " + node[99].y_coord);
 
@@ -188,6 +191,7 @@ public class Main {
 		frame.getContentPane().add(new Circle(N, node));
 
 		frame.setVisible(true);
+
 	}
 
 	public static void computeNeighbours(Node[] node) {
@@ -202,7 +206,7 @@ public class Main {
 					y = Math.pow(node[i].getCoordinateY() - node[k].getCoordinateY(), 2);
 					dystance = Math.sqrt(x + y);
 
-					if (dystance <= 40) { // maximum distance allowed between nodes
+					if (dystance <= 100) { // maximum distance allowed between nodes
 						node[i].updateNeighboursNodes(node[k]);
 						// System.out.println("distance between " + node[i].id + " and " + node[k].id +
 						// " = " + dystance);
@@ -216,17 +220,44 @@ public class Main {
 		}
 	}
 
-	public static void startGlossySimulation(Node[] node) throws Exception {
+	public static void startGlossySimulation(Node[] node, Node nodeInitiator ) throws Exception {
 		try {
 			for (int i = 0; i < node.length; i++) {
-				node[i].start();
-				//if (node[i].isAlive())
-					//System.out.println("node" + i + " is alive");
-				//else
-					//System.out.println("node" + i + " NOT alive");
+				if (i != nodeInitiator.id) {
+					node[i].start();
+				}
 
 			}
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void startGlossySimulationInitiator(Node[] node) throws Exception {
+		try {
+			node[12].start();
+			node[12].run();
+
+			// node[12].start();
+		} catch (
+
+		Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void startGlossySimulationRetransmit(String actionTimer, int delayStart, int timerInterval, Node nodeTimer) throws Exception {
+		 ExcutionTimer glossyTimer = new ExcutionTimer();	
+		try {
+			glossyTimer.activateTimer(actionTimer,delayStart, timerInterval,nodeTimer);
+			
+		} catch (
+
+		Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

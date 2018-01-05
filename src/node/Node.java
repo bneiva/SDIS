@@ -15,6 +15,7 @@ public class Node extends Thread {
 	int id;
 	private ArrayList<Node> myNeighbours = new ArrayList<Node>();
 	private ArrayList<String> ipNeighbours = new ArrayList<String>();
+	private int counterMessage = 0;
 
 	String ip = new String();
 
@@ -81,7 +82,7 @@ public class Node extends Thread {
 			System.out.println("node" + this.ip + " and id " + this.id + " has this neighbours " + itr.next());
 
 	}
-	
+
 	public void run() {
 		try {
 			startNode();
@@ -92,27 +93,41 @@ public class Node extends Thread {
 
 	}
 
-	//state machine
+	// state machine
 	public void startNode() throws Exception {
-		if (this.id<1) {
+		if (this.id == 12) {
 			try {
-				Iterator itr = this.ipNeighbours.iterator();
-				int i=0;
-				while (itr.hasNext()) {
-					MulticastPublisher[] Tx = new MulticastPublisher[this.ipNeighbours.size()];
-					Tx[i] = new MulticastPublisher(12345,(String)itr.next());
-					System.out.println("Eihhhhhhhhhhhhhhhhhhhhhhhhhhhh" + (String)itr.next());
+
+				for (int i = 0; i < this.ipNeighbours.size(); i++) {
+					Packet packet1 = new Packet();
+					MulticastPublisher[] Tx =  new MulticastPublisher[this.ipNeighbours.size()]; 
+					Tx[i]=new MulticastPublisher(12345, (String) this.ipNeighbours.get(i));
+					
+					//Tx[i] = new MulticastPublisher(12344,(String)"224.1.1.20");
+					Packet packet = null;
+					String messageToSend = " Mesage counter: " + Integer.toString(this.counterMessage);
+					Tx[i].sendPacketMessage(messageToSend.getBytes());
+					//Tx.sendPacketMessage(messageToSend.getBytes());
+					System.out.println("Send to " + (String) this.ipNeighbours.get(i));
 					Tx[i].start();
+
+					/// MulticastPublisher Tx1 = new MulticastPublisher(12345, "224.1.1.20");
+					// Packet packet11 = new Packet();
+
+					// Tx1.sendPacketMessage(packet11.encodeData(10, " Mesage from Node2"));
+					// Tx1.start();
 				}
+				this.counterMessage++;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else if (this.id!=0 && this.id<100) {
-			MulticastReceiver Rx =  new MulticastReceiver(12345,this.ip); 
+		} else if (this.id != 0 && this.id < 100 && this.id != 12) {
+			MulticastReceiver Rx = new MulticastReceiver(12345, this.ip);
 			Packet packet = new Packet();
 			Rx.start();
-			System.out.println("packet bytes  " +  Rx.packetMessageBytes());
+			Rx.packetMessageBytes();
+			System.out.println("packet bytes  " + Rx.packetMessageBytes() + "waiting with this IP" + this.ip);
 
 		}
 

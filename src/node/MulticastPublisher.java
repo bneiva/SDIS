@@ -44,9 +44,8 @@ public class MulticastPublisher extends Thread {
 		packet.setPort(mcPort);
 
 		udpSocket.send(packet);
-
-		System.out.println("Sent a  multicast message.............................................");
-		System.out.println("Exiting application...................................................");
+		String speakTome = new String(packet.getData(), packet.getOffset(), packet.getLength());
+		System.out.println("Sent a  multicast message...");
 
 		udpSocket.close();
 	}
