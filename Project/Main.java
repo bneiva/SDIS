@@ -1,15 +1,16 @@
 package Project;
 
-import java.awt.Frame;
-import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import static java.lang.System.arraycopy;
 import java.util.*;
+import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
-public class Main {
+public class Main{
 
     /* Os nós são criados num vetor Node[]; é possível definir o número máximo de pontos (N), a largura e altura máximas da janela/sala/grafico (roomL, roomW) e o número 
      de colunas diferentes (nCol) para criação dos pontos; Estes pontos podem ser posteriormente definidos a partir do String[] args;
@@ -44,9 +45,12 @@ public class Main {
     //Para DEBUG: debug= 1; NORMAL: debug = 0;
     public static int debug = 1;
     
-    private static int roomL = 500;
-    private static int roomW = 500;
-        
+    private static final int roomL = 500;
+    private static final int roomW = 500;
+    
+    
+  
+
     // Method for getting the maximum value
     public static int getMax(int[] inputArray){ 
         int maxValue = inputArray[0];
@@ -60,11 +64,13 @@ public class Main {
     return maxIndex; 
   }
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws InterruptedException{
        
     //Criar rede
         //N - nodes number
         int N = 100;
+        //Definir raio de alcance
+        int radius = 75;
         
         Node[] node = new Node[N];    
         
@@ -149,24 +155,33 @@ public class Main {
         int nSer = 1;
         
         //Gerar os nós
-        node[0] = new Node(node, 0, 0, 0, 0, 0);
+        node[0] = new Node(node, 0, 0, 0, 0, 0, roomW, roomL);
         for(int k = 0; k<nCol; k++){
             int nCP = colGen[k];
             for(int g = 0; g<nCP; g ++){
                 if(k == 0){
-                    node[nSer] = new Node(node, maxLim[k], 0, roomW, 0, nSer);
+                    node[nSer] = new Node(node, maxLim[k], 0, roomW, 0, nSer, roomW, roomL);
                 }else{
-                    node[nSer] = new Node(node, maxLim[k], maxLim[k-1], roomW, 0, nSer);
+                    node[nSer] = new Node(node, maxLim[k], maxLim[k-1], roomW, 0, nSer, roomW, roomL);
                 }
                 nSer++; 
             }
             
         }
         
+        //Verifica vizinhança
+        computeNeighbours(node, radius);
+        
+        //Calcular nível
+        getLevel(node);
+        
+        //Verifica vizinhança tendo em conta os níveis
+        computeNeighboursLevel(node, radius);
+        
         if(debug == 1)
             System.out.println(node[99].x_coord + " " + node[99].y_coord);
         
-        JFrame frame = new JFrame();
+        JFrame frame = new JFrame("Glossy simulator");
         
         frame.addWindowListener(new WindowAdapter(){
         
@@ -175,12 +190,182 @@ public class Main {
             }
     
         });
+          
+        JButton startSim = new JButton();
+        frame.add(startSim);
+        startSim.setSize(200,20);
+        startSim.setLocation(800, 100);
+        startSim.setText("Start simulation");
        
-        frame.setSize(600, 600);
+        
+        /*
+        JButton newSim = new JButton();
+        frame.add(newSim);
+        newSim.setSize(150,20);
+        newSim.setLocation(950, 100);
+        newSim.setText("Restart network");
+        newSim.addActionListener(new NewSim());
+        */      
+        
+      
+        
+        JTextField nodeToWatch = new JTextField(20);
+        frame.add(nodeToWatch);
+        nodeToWatch.setSize(150,20);
+        nodeToWatch.setLocation(750, 300);
+        
+        
+        JButton BnodeToWatch = new JButton();
+        frame.add(BnodeToWatch);
+        BnodeToWatch.setSize(200,20);
+        BnodeToWatch.setLocation(900, 300);
+        BnodeToWatch.setText("Node to watch");
+        BnodeToWatch.addActionListener(new ActionListener(){
+           public void actionPerformed(ActionEvent ae){
+                int nodeWatching = Integer.parseInt(nodeToWatch.getText());
+                
+                ShowConnections n = new ShowConnections(node[nodeWatching]);
+           } 
+        });
+        
+        JButton Bstats = new JButton();
+        frame.add(Bstats);
+        Bstats.setSize(200,20);
+        Bstats.setLocation(800, 500);
+        Bstats.setText("Simulation stats");
+      
+        
+        frame.setSize(1200, 670);
         
         frame.getContentPane().add(new Circle(N, node));
-        
+        frame.setResizable(false);
         frame.setVisible(true);
+        
+        
+        System.out.println("");
+      /*  
+        //Criar Threads de nodes
+        Thread[] t = new Thread[N];
+        int l = 0;
+        for(int i = 0; i<N; i++){
+            try { 
+               t[i] = new Thread(new NodeThread(N, node, i));
+               t[i].start();
+               l++;
+            } catch (Exception e) {
+                System.out.println("Error in thread creation!");
+            }
+        }
+        
+        for(int i = 0; i<N; i++){
+            t[i].join();
+        }
+        */
+        /*int[] neigTest = node[0].getNeigList();
+        
+        for(int d = 0; d<neigTest.length; d++)
+            System.out.println(neigTest[d]);
+        
+        */
+    
     }
+    
+    public static void computeNeighbours(Node[] node, int radius) {
+            double x = 0;
+            double y = 0;
+            double distance = 0;
+
+            for (int i = 0; i < node.length; i++) {
+                    for (int k = 0; k < node.length; k++) {
+                            if (i != k) {
+                                    x = Math.pow(node[i].getCoordinateX() - node[k].getCoordinateX(), 2);
+                                    y = Math.pow(node[i].getCoordinateY() - node[k].getCoordinateY(), 2);
+                                    distance = Math.sqrt(x + y);
+
+                                    if (distance <= radius) { // maximum distance allowed between nodes
+                                            node[i].updateNeighboursNodes(node[k]);
+                                            // System.out.println("distance between " + node[i].id + " and " + node[k].id +
+                                            // " = " + dystance);
+                                            node[i].updateListOfIPs(node[k].ip);
+                                    }
+
+                                    distance = 0;
+
+                            }
+                    }
+            }
+            
+    }
+    
+    public static void computeNeighboursLevel(Node[] node, int radius) {
+            double x = 0;
+            double y = 0;
+            double distance = 0;
+
+            for (int i = 0; i < node.length; i++) {
+                    for (int k = 0; k < node.length; k++) {
+                            if (i != k) {
+                                    x = Math.pow(node[i].getCoordinateX() - node[k].getCoordinateX(), 2);
+                                    y = Math.pow(node[i].getCoordinateY() - node[k].getCoordinateY(), 2);
+                                    distance = Math.sqrt(x + y);
+
+                                    if ((distance <= radius) && (node[k].level>node[i].level)) { // maximum distance allowed between nodes
+                                            node[i].updateNeighboursNodesLevelTx(node[k]);
+                                            node[k].updateNeighboursNodesLevelRx(node[i]);
+                                            // System.out.println("distance between " + node[i].id + " and " + node[k].id +
+                                            // " = " + dystance);
+                                            node[i].updateListOfIPsLevelTx(node[k].ip);
+                                            node[k].updateListOfIPsLevelRx(node[i].ip);
+                                    }
+
+                                    distance = 0;
+
+                            }
+                    }
+            }
+            
+    }
+    
+    private static void getLevel(Node[] node){
+        
+        int level = 0;
+        
+        node[0].level = level;
+        
+        level = 1;
+        
+        int[] neigID = node[0].getNeigList();
+        
+        int[] neigIDclear;
+    
+        for(int i = 0; i<neigID.length; i++){
+            node[neigID[i]].level = level;
+            if(debug == 1)
+            System.out.println("Level: "+ node[neigID[i]].level +"; NodeID: "+neigID[i]);
+        }
+        
+        level = 2;
+        
+        for(int b = 0; b<node.length; b++){
+            for(int i = 0; i<node.length; i++){
+                if(node[i].level == (level-1)){
+                    
+                    neigID = node[i].getNeigList();
+                    
+                    for(int s = 0; s<neigID.length; s++){
+                        if((!((node[neigID[s]].level < level) && (node[neigID[s]].level >= 0))) && !(node[neigID[s]].level >= level)){
+                            System.out.println(node[neigID[s]].level + " NODE : " + neigID[s]);
+                            node[neigID[s]].level = level;
+                        }
+                  }
+                }
+            
+            }
+            level++;
+        }
+    }
+    
+    
+    
     
 }
