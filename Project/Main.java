@@ -243,30 +243,54 @@ public class Main{
         
         
         System.out.println("");
-      /*  
-        //Criar Threads de nodes
+      
+        
+        //Criação de threads
+        int maxLvl = getMaxLevel(node);
         Thread[] t = new Thread[N];
-        int l = 0;
+        
+        int lvlActual = maxLvl;
+        
+        System.out.println(lvlActual);
+        
+        int f = 0;
         for(int i = 0; i<N; i++){
-            try { 
-               t[i] = new Thread(new NodeThread(N, node, i));
-               t[i].start();
-               l++;
-            } catch (Exception e) {
-                System.out.println("Error in thread creation!");
+            for(int q = 0; q<N; q++){
+                if(node[q].level == lvlActual && lvlActual>=0){
+                    t[f] = new Thread(new NodeThread(N, node, q, maxLvl));
+                    f++;
+                }
             }
+            lvlActual--;
         }
         
-        for(int i = 0; i<N; i++){
+        System.out.println("F: "+ f);
+        
+        for(int i = N-1; i>=0; i--){
+            t[i].start();
+        }
+        
+        for(int i = N-1; i>=0; i--){
             t[i].join();
         }
-        */
-        /*int[] neigTest = node[0].getNeigList();
         
-        for(int d = 0; d<neigTest.length; d++)
-            System.out.println(neigTest[d]);
+        System.out.println(maxLvl);
+          
+        System.out.println();
         
-        */
+        int[] neigList = node[46].getRxList();
+        for(int e = 0; e<neigList.length; e++){
+            System.out.println(neigList[e]);
+        }
+        
+        System.out.println();
+        
+        neigList = node[46].getTxList();
+        for(int e = 0; e<neigList.length; e++){
+            System.out.println(neigList[e]);
+        }
+        
+
     
     }
     
@@ -364,6 +388,19 @@ public class Main{
             level++;
         }
     }
+    
+    private static int getMaxLevel(Node[] node){
+        
+        int level_atual = -1;
+        for(int i = 0; i<node.length; i++){
+            if(node[i].level > level_atual){
+                level_atual = node[i].level;
+            }
+        }
+        
+        return level_atual;
+    }
+    
     
     
     

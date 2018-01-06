@@ -33,7 +33,9 @@ public class Node {
     ArrayList<Node> myNeighboursLevelTx = new ArrayList<Node>();
     ArrayList<String> ipNeighboursLevelTx = new ArrayList<String>();
     
+    //Lista de onde recebe
     ArrayList<Node> myNeighboursLevelRx = new ArrayList<Node>();
+    //Lista para quem envia
     ArrayList<String> ipNeighboursLevelRx = new ArrayList<String>();
     
    
@@ -105,6 +107,7 @@ public class Node {
         public void updateListOfIPsLevelRx(String ip) {
 		this.ipNeighboursLevelRx.add(ip);
 	}
+        
         
 
 	public void printListIP() {

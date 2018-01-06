@@ -12,13 +12,13 @@ public class NodeThread implements Runnable{
     Node[] node;
     int N;
     int id;
-    
-    private Lock lock = new ReentrantLock();
-    
-    public NodeThread(int N, Node[] node, int id){
+    int maxLvl;
+
+    public NodeThread(int N, Node[] node, int id, int maxLvl){
         this.N = N;
         this.node = new Node[N];
         this.id = id;
+        this.maxLvl = maxLvl;
         System.arraycopy(node, 0, this.node, 0, node.length);
     }
     
@@ -26,60 +26,53 @@ public class NodeThread implements Runnable{
     public void run(){
         
         try {
+            int[] neigRxList = node[id].getRxList();
+            int[] neigTxList = node[id].getTxList();
             
-            //Abrir socket para transmitir
-            //Verificar nós nas vizinhanças
-            //Ligar-se a nós na vizinhanças (join group)
-            
-            //Correr FSM(?)
-            
-            String TXip = node[id].ip;
-            int TXport = node[id].porta;
-            
-            int initiator;
-            
-            if(id == 0){
-                initiator = 1;
-            } else{
-                initiator = 0;
+            if(neigTxList.length == 0){
+                int[] RxNeig = node[id].getRxList();
+                Thread[] t = new Thread[RxNeig.length];
+                for(int i = 0; i<RxNeig.length; i++){
+                    t[i] = new Thread(new RxSocket(node[RxNeig[i]]));
+                }
+                for(int i = (RxNeig.length-1); i>=0; i--){
+                    t[i].start();
+                }
+                 
+            } else if(neigRxList.length == 0){
+                String msg = "Mensagem a enviar";
+                
+                Thread t = new Thread(new TxSocket(node[id], msg));
+                
+                t.start();
+                t.join();
+            } else {
+                int[] RxNeig = node[id].getRxList();
+                Thread[] t = new Thread[RxNeig.length];
+                
+                Thread xT = new Thread();
+                
+                byte[] receivedStr;
+                
+                for(int i = 0; i<RxNeig.length; i++){
+                    t[i] = new Thread(new RxTxSocket(node[RxNeig[i]], node[id]));
+                }
+                
+                for(int i = (RxNeig.length-1); i>=0; i--){
+                    t[i].start();
+
+
+                }
+                
+                for(int i = (RxNeig.length-1); i>=0; i--){
+                    t[i].join();
+                }
             }
             
-            if(initiator == 1){
-                InetAddress groupTX = InetAddress.getByName(TXip);
-                MulticastSocket ms = new MulticastSocket();
-                
-                String toSend =" Teste ";
-                byte[] buf = toSend.getBytes();
-                
-                DatagramPacket p = new DatagramPacket(buf, buf.length, groupTX, TXport);
-                
-                ms.send(p);
-                
-            } else{
-               
-                InetAddress groupRX = InetAddress.getByName(node[0].ip);
-                MulticastSocket mr = new MulticastSocket(node[0].porta);
-                byte[] buf = new byte[512];
-                DatagramPacket r = new DatagramPacket(buf, buf.length);
-                mr.receive(r);
-                String str = new String(r.getData());
-                
-                System.out.println("Chegou: " + r);
-            }
             
-            /*lock.lock();
-            try{
-                System.out.println(id);
-            } finally{
-                lock.unlock();
-            }
-            /*
-            try {
-            MulticastSocket TXms = new MulticastSocket();
-            } catch (IOException ex) {
-            System.err.println("Error creating TX socket!");
-            }*/
-        } catch (IOException ex) {
+            
+           
+        } catch (InterruptedException ex) {
             Logger.getLogger(NodeThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
