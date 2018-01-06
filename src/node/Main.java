@@ -167,7 +167,7 @@ public class Main {
 		startGlossySimulation(node, node[12]);
 
 		/* start initiator */
-		startGlossySimulationRetransmit("start", 20000, 5000, node[12]);
+		startGlossySimulationRetransmit("start", 10000, 5000, node[12]);
 
 		if (debug == 1)
 			System.out.println(node[99].x_coord + " " + node[99].y_coord);

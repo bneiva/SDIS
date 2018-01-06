@@ -15,7 +15,7 @@ public class Node_V00 {
 	
 	public static  void main(String[] args) throws Exception {
 		
-		MulticastReceiver Rx =  new MulticastReceiver(12345,"224.1.1.20"); 
+		MulticastReceiver Rx =  new MulticastReceiver(12345,"224.1.1.12"); 
 		Packet packet = new Packet();
 		 
 		Rx.start();
