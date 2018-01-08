@@ -15,16 +15,19 @@ public class Node_V00 {
 	
 	public static  void main(String[] args) throws Exception {
 		
-		MulticastReceiver Rx =  new MulticastReceiver(12345,"224.1.1.12"); 
-		Packet packet = new Packet();
+		//MulticastReceiver Rx =  new MulticastReceiver(12345,"224.1.1.12"); 
+		//Packet packet = new Packet();
 		 
-		Rx.start();
-		System.out.println("packet bytes  " +  Rx.packetMessageBytes());
-		 
-		
-		 //MulticastReceiver Rx1 =  new MulticastReceiver(12345,"230.1.1.2"); 
-		 //Rx1.start();
-		//MulticastPublisher Tx = new MulticastPublisher(12345,"230.1.1.1");
+		//Rx.start();
+		//System.out.println("packet bytes  " +  Rx.packetMessageBytes());
+		MulticastReceiver[] Rx = new MulticastReceiver[5];
+		for (int i = 0; i < 5; i++) {
+			Rx[i] = new MulticastReceiver(12345,"224.1.1.1");
+			Rx[i].start();
+			Rx[i].packetMessageBytes();
+			System.out.println("packet bytes " + Rx[i].packetMessageBytes() + "waiting with this IP");
+
+		}
 		
 	}
 }

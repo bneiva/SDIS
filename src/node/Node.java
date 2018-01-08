@@ -104,6 +104,7 @@ public class Node extends Thread {
 			try {
 
 				MulticastPublisher Tx1 = new MulticastPublisher(12345, this.ip);
+				// Packet packet11 = new Packet();
 				String messageToSend = " Mesage counter: " + Integer.toString(this.counterMessage);
 				Tx1.sendPacketMessage(messageToSend.getBytes());
 				Tx1.start();

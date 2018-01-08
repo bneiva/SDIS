@@ -43,6 +43,7 @@ public class MulticastPublisher extends Thread {
 		packet.setAddress(mcIPAddress);
 		packet.setPort(mcPort);
 
+		
 		udpSocket.send(packet);
 		String speakTome = new String(packet.getData(), packet.getOffset(), packet.getLength());
 		System.out.println("Sent a  multicast message...");

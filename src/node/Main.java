@@ -222,6 +222,8 @@ public class Main {
 				for (int k = 0; k < node.length; k++) {
 					if (node[k].ip.equals(nodeInitiator.getIpNeighboursNodes().get(i)))
 						node[k].start();
+						node[k].join();
+						
 				}
 			}
 
