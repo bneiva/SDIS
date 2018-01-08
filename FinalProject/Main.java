@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,6 +57,8 @@ public class Main{
     static int nos = 100;
     
     static String msg = "Mensagem a enviar";
+    
+    static int contador = 0;
     
     public Main(int raio, int nos, String msg) throws InterruptedException{
         this.raio = raio;
@@ -255,20 +258,18 @@ public class Main{
         startSim.setText("Start simulation");
         startSim.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent ae){
-                
+                contador = 0;
                 JFrame z = new JFrame();
                 
                 int maxLvl = getMaxLevel(node);
                 
                 z.setSize(700, 700);
-                
+                z.setLocation(1200,0);
                 z.getContentPane().add(new Circle(N, node, 0));
                 z.setVisible(true);
                 z.getContentPane().add(new PaintedCircle(node[0], 1, maxLvl));
                 z.setVisible(true);
                 z.setResizable(false);
-                
-                
                 
                 Thread[] t = new Thread[N];
 
@@ -304,8 +305,48 @@ public class Main{
                 System.out.println(maxLvl);
 
                 System.out.println();
-
-
+                
+                JFrame flowNet = new JFrame();
+                flowNet.setSize(637, 660);
+                flowNet.setResizable(false);
+                
+               
+                
+                try {
+                    //flowNet.getContentPane().add(new ComFlow(node, -1, "Receivers.txt"));
+                    flowNet.setVisible(true);
+                    flowNet.getContentPane().add(new ComFlow(node, contador, "Receivers.csv"));
+                    flowNet.setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                JFrame butaozinho = new JFrame();
+                butaozinho.setSize(200, 75);
+                butaozinho.setLocation(635,0);
+                butaozinho.setResizable(false);
+                butaozinho.setVisible(true);
+                
+                JButton nextLevel = new JButton();
+                butaozinho.getContentPane().add(nextLevel);
+                nextLevel.setSize(150,50);
+                nextLevel.setLocation(750, 330);
+                nextLevel.setText("Next Level");
+                nextLevel.addActionListener(new ActionListener(){
+                   public void actionPerformed(ActionEvent ae){
+                        contador ++;
+                        System.out.println(contador);
+                       try {
+                           
+                           flowNet.getContentPane().add(new ComFlow(node, contador, "Receivers.csv"));
+                           flowNet.setVisible(true);
+                       } catch (IOException ex) {
+                           Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                       }
+                        
+                    } 
+                 });
+                
             }
         });
        
@@ -330,7 +371,7 @@ public class Main{
         
 
         
-        frame.setSize(1200, 670);
+        frame.setSize(1200, 660);
         
         frame.getContentPane().add(new Circle(N, node, 1));
         frame.setResizable(false);
