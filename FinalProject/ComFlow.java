@@ -173,7 +173,8 @@ public class ComFlow extends JComponent {
 
                     }
                 }
-
+                
+                br.close();
 
                     RxxnLvl1 = RxnLvl1.toArray(new String[RxnLvl1.size()]);
                     RxxnLvl2 = RxnLvl2.toArray(new String[RxnLvl2.size()]);
@@ -363,8 +364,7 @@ public class ComFlow extends JComponent {
             c[12] = new Color(255,218,185);
             c[13] = new Color(145, 255,18);
             c[14] = new Color(18,248,255);
-            
-            System.out.println("ESTOU SIm|");
+
     }
     
         

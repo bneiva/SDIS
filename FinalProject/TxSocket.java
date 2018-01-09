@@ -24,7 +24,10 @@ public class TxSocket implements Runnable{
     public void run(){
         
         try {
-            byte[] buf = msg.getBytes();
+            byte[] buf;
+            Packet buf1 = new Packet();
+            
+            buf = buf1.encodeData(0, msg);
             
             InetAddress group = InetAddress.getByName(id.ip);
             int porta = id.porta;
@@ -38,7 +41,9 @@ public class TxSocket implements Runnable{
             
             Thread.sleep(80);
             
+            ms.setTimeToLive(80);
             ms.send(dp);
+           
             
             ms.close();
             

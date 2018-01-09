@@ -113,18 +113,12 @@ public class Main{
         int[] maxLim = new int[nCol];
         for(int k = 0; k<nCol; k++){
             maxLim[k] = (k+1)*roomW/nCol;
-            if(debug == 1)
-                System.out.println("Max Lim ("+k+"): " + maxLim[k]);
         }
         //Valor médio dos limites das colunas
         int[] meanLim = new int[nCol];
         meanLim[0] = maxLim[0]/2;
-        if(debug == 1)
-                System.out.println("Mean Lim ("+0+"): " + meanLim[0]);
         for(int k = 1; k<nCol; k++){
             meanLim[k] = maxLim[k-1]+(maxLim[k]-maxLim[k-1])/2;
-            if(debug == 1)
-                System.out.println("Mean Lim ("+k+"): " + meanLim[k]);
         }
 
         
@@ -137,9 +131,7 @@ public class Main{
         for(int k = 0; k<(nCol-1); k++){
             Random col = new Random();            
             colPoints[k] = col.nextInt(maxPerCol-minPerCol)+minPerCol;
-            if(debug == 1)
-                System.out.println(colPoints[k]);
-            //Faz somatório de pontos para no final se verificar quantos falta de forma a garantir os n pontos
+           //Faz somatório de pontos para no final se verificar quantos falta de forma a garantir os n pontos
             sum = sum + colPoints[k];
         }
         colPoints[nCol-1] = (N-1)-sum;
@@ -148,10 +140,7 @@ public class Main{
             int maxIndex = getMax(colPoints);
             colPoints[maxIndex] = colPoints[maxIndex] + (N-1)-sum - nCol/4;
         }
-        if(debug == 1)
-            System.out.println("Final"+colPoints[nCol-1]);
-        
-        //Gerar primeira coluna a ser gerada
+     //Gerar primeira coluna a ser gerada
         Random colFirst = new Random();
         int firstCol = colFirst.nextInt(nCol);
         int[] colGen = new int[10];
@@ -167,16 +156,7 @@ public class Main{
             j++;
         }
         
-        if(debug == 1){
-            System.out.println("First Column:"+firstCol);
-            for(int k = 0; k<nCol; k++){
-                System.out.println("k="+k+": "+colGen[k]);
-            }
-            for(int k = 0; k<nCol; k++){
-                System.out.println("k="+k+": "+colPoints[k]);
-            }
-        }
-        int nSer = 1;
+     int nSer = 1;
         
         //Gerar os nós
         node[0] = new Node(node, 0, 0, 0, 0, 0, roomW, roomL);
@@ -245,6 +225,7 @@ public class Main{
                     
                     new Main(raio, nos, msg2Send);
                     frame.dispose();
+                    
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -258,6 +239,10 @@ public class Main{
         startSim.setText("Start simulation");
         startSim.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent ae){
+                
+                File fe = new File("Receivers.csv");
+                fe.delete();
+                    
                 contador = 0;
                 JFrame z = new JFrame();
                 
@@ -275,8 +260,6 @@ public class Main{
 
                 int lvlActual = maxLvl;
 
-                System.out.println(lvlActual);
-
                 int f = 0;
                 for(int i = 0; i<N; i++){   
                     for(int q = 0; q<N; q++){
@@ -288,9 +271,7 @@ public class Main{
                     lvlActual--;
                 }
 
-                System.out.println("F: "+ f);
-
-                for(int i = f-1; i>=0; i--){
+              for(int i = f-1; i>=0; i--){
                     t[i].start();
                 }
 
@@ -302,10 +283,6 @@ public class Main{
                     }
                 }
 
-                System.out.println(maxLvl);
-
-                System.out.println();
-                
                 JFrame flowNet = new JFrame();
                 flowNet.setSize(637, 660);
                 flowNet.setResizable(false);
@@ -313,7 +290,6 @@ public class Main{
                
                 
                 try {
-                    //flowNet.getContentPane().add(new ComFlow(node, -1, "Receivers.txt"));
                     flowNet.setVisible(true);
                     flowNet.getContentPane().add(new ComFlow(node, contador, "Receivers.csv"));
                     flowNet.setVisible(true);
@@ -335,7 +311,6 @@ public class Main{
                 nextLevel.addActionListener(new ActionListener(){
                    public void actionPerformed(ActionEvent ae){
                         contador ++;
-                        System.out.println(contador);
                        try {
                            
                            flowNet.getContentPane().add(new ComFlow(node, contador, "Receivers.csv"));
@@ -346,8 +321,9 @@ public class Main{
                         
                     } 
                  });
-                
+                System.out.println("Simulation end");
             }
+            
         });
        
         JTextField nodeToWatch = new JTextField(20);
@@ -376,16 +352,6 @@ public class Main{
         frame.getContentPane().add(new Circle(N, node, 1));
         frame.setResizable(false);
         frame.setVisible(true);
-        
-        
-        System.out.println("");
-      
-        
-        //Criação de threads
-        
-        
-        //System.out.println("Programa Terminou!");
-
     
     }
     
@@ -403,8 +369,6 @@ public class Main{
 
                                     if (distance <= radius) { // maximum distance allowed between nodes
                                             node[i].updateNeighboursNodes(node[k]);
-                                            // System.out.println("distance between " + node[i].id + " and " + node[k].id +
-                                            // " = " + dystance);
                                             node[i].updateListOfIPs(node[k].ip);
                                     }
 
@@ -431,8 +395,6 @@ public class Main{
                                     if ((distance <= radius) && (node[k].level>node[i].level)) { // maximum distance allowed between nodes
                                             node[i].updateNeighboursNodesLevelTx(node[k]);
                                             node[k].updateNeighboursNodesLevelRx(node[i]);
-                                            // System.out.println("distance between " + node[i].id + " and " + node[k].id +
-                                            // " = " + dystance);
                                             node[i].updateListOfIPsLevelTx(node[k].ip);
                                             node[k].updateListOfIPsLevelRx(node[i].ip);
                                     }
@@ -459,8 +421,6 @@ public class Main{
     
         for(int i = 0; i<neigID.length; i++){
             node[neigID[i]].level = level;
-            if(debug == 1)
-            System.out.println("Level: "+ node[neigID[i]].level +"; NodeID: "+neigID[i]);
         }
         
         level = 2;
@@ -473,7 +433,6 @@ public class Main{
                     
                     for(int s = 0; s<neigID.length; s++){
                         if((!((node[neigID[s]].level < level) && (node[neigID[s]].level >= 0))) && !(node[neigID[s]].level >= level)){
-                            System.out.println(node[neigID[s]].level + " NODE : " + neigID[s]);
                             node[neigID[s]].level = level;
                         }
                   }

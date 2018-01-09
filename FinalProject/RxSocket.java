@@ -17,6 +17,10 @@ public class RxSocket extends Thread{
     Node n;
     Node id;
     JFrame j;
+    
+    String msg;
+    int counter;
+    
     public RxSocket(Node n, JFrame j, Node id){
         this.j = j;
         this.id = id;
@@ -29,6 +33,8 @@ public class RxSocket extends Thread{
     
     @Override
     public void run(){
+            
+            byte[] buf2 = new byte[512];
         
         try {
                 
@@ -42,14 +48,32 @@ public class RxSocket extends Thread{
             
             DatagramPacket dp = new DatagramPacket(buf, buf.length);
             
-            ms.receive(dp);
-       
-            j.getContentPane().add(new PaintedCircle(n,0,0));
-            j.setVisible(true);
-            j.getContentPane().add(new PaintedCircle(id,0,0));
-            j.setVisible(true);
             
-            buf = dp.getData();
+            Packet buf1 = new Packet();
+            
+            
+            
+            ms.setSoTimeout(10000);
+            try{
+                ms.receive(dp);
+
+                j.getContentPane().add(new PaintedCircle(n,0,0));
+                j.setVisible(true);
+                j.getContentPane().add(new PaintedCircle(id,0,0));
+                j.setVisible(true);
+
+                buf = dp.getData();
+                
+                buf1.decodeData(buf);
+                
+                counter = buf1.counterReceive;
+                buf2 = buf1.receiveData;
+                
+                
+            } catch (SocketTimeoutException e){
+                System.out.println("Timeout reached!!! " + e);
+                ms.close();
+            }
             
             File file = new File("Receivers.csv");
             
@@ -61,18 +85,18 @@ public class RxSocket extends Thread{
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(id.id+";");
             bw.write(n.id+";");
-            for(int i = 0; i<buf.length; i++){
-                if(buf[i]>= 32 && buf[i]<=125){
-                    bw.write(buf[i]);
+            
+            for(int i = 0; i<buf2.length; i++){
+                if(buf2[i]>= 32 && buf2[i]<=125){
+                    bw.write(buf2[i]);
                 }
             }
             bw.write(";");
-            bw.write(id.level+";");
+            bw.write((counter+1)+";");
             bw.newLine();
             bw.close();
             ms.close();
             
-            System.out.println(new String(dp.getData()));
             
         }catch (Exception e){
             System.err.println("Error Rx Socket");
